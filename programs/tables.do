@@ -233,3 +233,76 @@ forvalues year = 2005/2023 {
         }
 
 }
+
+
+*** Pages for Site
+
+
+forvalues year = 2005/2023 {
+    file open myfile using _`year'_balance.qmd, write replace
+********************************************************************************    
+            foreach vmain of global listv1 {
+                display "${`vmain'}"
+                file write myfile "## ${`vmain'}" _n _n
+                
+                foreach vsec of global listv2 {
+                    display "`vtab'"
+                    if "`vsec'"!="none" local vdetlab ${`vmain'} x ${`vsec'}
+                    else                local vdetlab ${`vmain'}                    
+                    file write myfile "### `vdetlab'" _n _n
+                    
+                    file write myfile "{{< include resources/y`year'/f`year'_`vmain'_`vsec'.md >}}" _n	
+                    file write myfile ":Distribution Balance {#tbl-bal`year'_`vmain'_`vsec'}" _n _n                   
+                    
+                }
+             } 
+********************************************************************************             
+    file close myfile
+}
+  
+
+
+forvalues year = 2005/2023 {
+    file open myfile using _`year'_qm.qmd, write replace
+********************************************************************************    
+            foreach vmain of global listv1 {
+                display "${`vmain'}"
+                file write myfile "## ${`vmain'}" _n _n
+                
+                foreach vsec of global listv2 {
+                    display "`vtab'"
+                    if "`vsec'"!="none" local vdetlab ${`vmain'} x ${`vsec'}
+                    else                local vdetlab ${`vmain'}                    
+                    file write myfile "### `vdetlab'" _n _n
+                    
+                    file write myfile "::: {.panel-tabset} " _n _n
+                    
+                    file write myfile "## Mean " _n _n
+                    
+                    file write myfile "{{< include resources/y`year'/mn`year'_`vmain'_`vsec'.md >}}" _n	
+                    file write myfile ":Match Quality: Mean {#tbl-mn`year'_`vmain'_`vsec'}" _n _n  
+          
+                    
+                    *file write myfile "{{< >}}" _n
+                    file write myfile "## Median " _n _n
+                    
+                    file write myfile "{{< include resources/y`year'/md`year'_`vmain'_`vsec'.md >}}" _n	
+                    file write myfile ":Match Quality: Median {#tbl-md`year'_`vmain'_`vsec'}" _n _n  
+          
+                    *file write myfile "{{< >}}" _n
+                    file write myfile "## SD " _n _n
+                    
+                    file write myfile "{{< include resources/y`year'/sd`year'_`vmain'_`vsec'.md >}}" _n	
+                    file write myfile ":Match Quality: Standard Deviation {#tbl-sd`year'_`vmain'_`vsec'}" _n _n  
+                         
+                    file write myfile "::: " _n _n
+                    
+                    
+                }
+             } 
+********************************************************************************             
+    file close myfile
+}
+  
+
+
